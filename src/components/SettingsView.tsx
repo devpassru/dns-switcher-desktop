@@ -43,8 +43,6 @@ export function SettingsView({ state }: { state: AppStateSnapshot }) {
   const [newExcluded, setNewExcluded] = useState("");
 
   const enabledCount = state.providers.filter((p) => p.isEnabledInMenuBar).length;
-  const missingBuiltIn =
-    state.providers.filter((p) => p.isBuiltIn).length < 4;
 
   const tabs: { id: TabId; label: string; icon: typeof Server }[] = [
     { id: "servers", label: "Серверы", icon: Server },
@@ -112,15 +110,6 @@ export function SettingsView({ state }: { state: AppStateSnapshot }) {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                {missingBuiltIn && (
-                  <button
-                    type="button"
-                    onClick={() => api.restoreDefaultProviders()}
-                    className="text-xs font-medium text-blue-500 hover:underline"
-                  >
-                    Восстановить встроенные
-                  </button>
-                )}
                 <button
                   type="button"
                   onClick={() => setShowAddForm((v) => !v)}
@@ -189,7 +178,26 @@ export function SettingsView({ state }: { state: AppStateSnapshot }) {
             )}
 
             <div className="flex flex-col divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white dark:divide-white/10 dark:border-white/10 dark:bg-[#1e2128]">
-              {state.providers.map((p) => (
+              {state.providers.length === 0 ? (
+                <div className="flex items-center justify-between gap-3 px-4 py-4">
+                  <div>
+                    <div className="text-xs font-semibold">
+                      В системе нет DNS-серверов
+                    </div>
+                    <div className="text-[11px] text-gray-500 dark:text-gray-400">
+                      URL можно получить на rungate
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddForm(true)}
+                    className="shrink-0 rounded-lg bg-blue-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-600"
+                  >
+                    Добавить…
+                  </button>
+                </div>
+              ) : (
+                state.providers.map((p) => (
                 <div key={p.id} className="flex items-center gap-3 px-4 py-3">
                   <ToggleSwitch
                     checked={p.isEnabledInMenuBar}
@@ -234,7 +242,8 @@ export function SettingsView({ state }: { state: AppStateSnapshot }) {
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
                 </div>
-              ))}
+                ))
+              )}
             </div>
             <p className="px-1 text-[11px] text-gray-500 dark:text-gray-400">
               Тумблер слева включает или выключает сервер в списке быстрого

@@ -52,6 +52,7 @@ export function PopoverView({ state }: { state: AppStateSnapshot }) {
           onInstallBridge={() => api.installBridgeManually()}
           onEnableKeepVpn={() => api.setKeepDohOverVpn(true)}
           onOpenRelease={(url) => api.openExternalUrl(url)}
+          onOpenSettings={() => api.openWindow("settings")}
         />
 
         <div className="h-px bg-gray-200/80 dark:bg-white/10" />
@@ -88,7 +89,11 @@ export function PopoverView({ state }: { state: AppStateSnapshot }) {
             </div>
           </div>
 
-          {visibleProviders.length === 0 ? (
+          {state.providers.length === 0 ? (
+            <div className="px-2 py-2 text-[11px] text-gray-500 dark:text-gray-400">
+              Нет добавленных DNS-серверов. Добавьте сервер в Настройках.
+            </div>
+          ) : visibleProviders.length === 0 ? (
             <div className="px-2 py-2 text-[11px] text-gray-500 dark:text-gray-400">
               Серверы скрыты из меню трея. Включите их в Настройках.
             </div>

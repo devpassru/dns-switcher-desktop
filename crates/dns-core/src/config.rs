@@ -63,7 +63,7 @@ fn synchronize_providers(settings: &mut AppSettings) {
             fresh.is_enabled_in_menu_bar = item.is_enabled_in_menu_bar;
             seen_ids.insert(fresh.id.clone());
             updated.push(fresh);
-        } else {
+        } else if !item.is_built_in {
             let mut custom = item;
             if custom.bootstrap_ips.is_empty()
                 && custom.doh_host().to_lowercase().contains("tunnelhunt.ru")
@@ -95,14 +95,26 @@ mod tests {
         let path = dir.join("settings.json");
 
         let mut settings = AppSettings::default();
-        settings.providers[0].is_enabled_in_menu_bar = false;
+        assert!(settings.providers.is_empty());
+        settings.providers.push(DNSProvider {
+            id: "custom-test".to_string(),
+            name: "Custom Test".to_string(),
+            subtitle: "dns.example.com".to_string(),
+            doh_url: "https://dns.example.com/dns-query".to_string(),
+            dot_host: "dns.example.com".to_string(),
+            bootstrap_ips: vec!["1.1.1.1".to_string()],
+            plain_dns_supported: true,
+            website_url: "https://example.com/".to_string(),
+            is_built_in: false,
+            is_enabled_in_menu_bar: false,
+        });
         settings.excluded_domains = vec!["*.Corp.Local".to_string()];
         save_settings_to(&path, &settings).unwrap();
 
         let loaded = load_settings_from(&path);
         assert!(!loaded.providers[0].is_enabled_in_menu_bar);
         assert_eq!(loaded.excluded_domains, vec!["corp.local"]);
-        assert_eq!(loaded.providers.len(), DNSProvider::built_in_providers().len());
+        assert_eq!(loaded.providers.len(), 1);
 
         let _ = std::fs::remove_dir_all(&dir);
     }

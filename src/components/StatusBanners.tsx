@@ -2,6 +2,7 @@ import {
   AlertCircle,
   AlertTriangle,
   ArrowDownCircle,
+  Info,
   RefreshCw,
   WifiOff,
 } from "lucide-react";
@@ -13,6 +14,7 @@ interface StatusBannersProps {
   onInstallBridge: () => void;
   onEnableKeepVpn: () => void;
   onOpenRelease: (url: string) => void;
+  onOpenSettings: () => void;
 }
 
 export function StatusBanners({
@@ -21,6 +23,7 @@ export function StatusBanners({
   onInstallBridge,
   onEnableKeepVpn,
   onOpenRelease,
+  onOpenSettings,
 }: StatusBannersProps) {
   const activeHealth = state.selectedProviderId
     ? state.healthMap[state.selectedProviderId]
@@ -101,6 +104,27 @@ export function StatusBanners({
             )}
           </div>
         )}
+
+      {state.providers.length === 0 && (
+        <div className="flex items-center gap-2 rounded-lg bg-blue-500/12 px-2.5 py-1.5">
+          <Info className="h-3.5 w-3.5 shrink-0 text-blue-500" />
+          <div className="min-w-0 flex-1">
+            <div className="text-[11px] font-semibold">
+              В системе нет DNS-серверов
+            </div>
+            <div className="text-[10px] text-gray-500 dark:text-gray-400">
+              URL можно получить на rungate
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onOpenSettings}
+            className="shrink-0 rounded bg-blue-500 px-2 py-0.5 text-[11px] font-medium text-white hover:bg-blue-600"
+          >
+            Добавить
+          </button>
+        </div>
+      )}
 
       {state.updateStatus.status === "available" && (
         <div className="flex items-center gap-2 rounded-lg bg-blue-500/12 px-2.5 py-1.5">

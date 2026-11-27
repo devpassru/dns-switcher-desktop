@@ -103,65 +103,7 @@ impl DNSProvider {
     }
 
     pub fn built_in_providers() -> Vec<DNSProvider> {
-        vec![
-            DNSProvider {
-                id: "comss-one".to_string(),
-                name: "Comss.one DNS".to_string(),
-                subtitle: "dns.comss.one • DoH + Быстрый split-DNS".to_string(),
-                doh_url: "https://dns.comss.one/dns-query".to_string(),
-                dot_host: "dns.comss.one".to_string(),
-                bootstrap_ips: vec![
-                    "195.133.25.16".to_string(),
-                    "212.109.195.93".to_string(),
-                    "212.109.221.20".to_string(),
-                ],
-                plain_dns_supported: true,
-                website_url: "https://comss.one/".to_string(),
-                is_built_in: true,
-                is_enabled_in_menu_bar: true,
-            },
-            DNSProvider {
-                id: "dagami".to_string(),
-                name: "Dagami DNS".to_string(),
-                subtitle: "dns.dagami.ru • DoH + IPv4".to_string(),
-                doh_url: "https://dns.dagami.ru/dns-query".to_string(),
-                dot_host: "dns.dagami.ru".to_string(),
-                bootstrap_ips: vec!["2.56.122.194".to_string(), "89.22.224.205".to_string()],
-                plain_dns_supported: true,
-                website_url: "https://dns.dagami.ru/".to_string(),
-                is_built_in: true,
-                is_enabled_in_menu_bar: true,
-            },
-            DNSProvider {
-                id: "magicdns".to_string(),
-                name: "MagicDNS".to_string(),
-                subtitle: "magicdns.ru • DoH + IPv4".to_string(),
-                doh_url: "https://dns.magicdns.ru/dns-query".to_string(),
-                dot_host: "dns.magicdns.ru".to_string(),
-                bootstrap_ips: vec![
-                    "45.86.65.1".to_string(),
-                    "45.83.27.181".to_string(),
-                    "109.120.132.43".to_string(),
-                    "94.249.177.102".to_string(),
-                ],
-                plain_dns_supported: true,
-                website_url: "https://magicdns.ru/".to_string(),
-                is_built_in: true,
-                is_enabled_in_menu_bar: true,
-            },
-            DNSProvider {
-                id: "dns-ai".to_string(),
-                name: "DNS-AI".to_string(),
-                subtitle: "dns-ai.ru • Только DoH / DoT".to_string(),
-                doh_url: "https://dns.dns-ai.ru/dns-query".to_string(),
-                dot_host: "dns.dns-ai.ru".to_string(),
-                bootstrap_ips: vec!["194.87.196.13".to_string(), "45.151.102.219".to_string()],
-                plain_dns_supported: false,
-                website_url: "https://dns-ai.ru/".to_string(),
-                is_built_in: true,
-                is_enabled_in_menu_bar: true,
-            },
-        ]
+        Vec::new()
     }
 }
 

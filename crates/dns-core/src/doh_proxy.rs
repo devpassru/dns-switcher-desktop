@@ -38,7 +38,7 @@ struct TimedListCache {
 }
 
 struct ProxyConfig {
-    active_provider: DNSProvider,
+    active_provider: Option<DNSProvider>,
     all_providers: Vec<DNSProvider>,
     fallback_server: String,
     is_fallback_enabled: bool,
@@ -108,8 +108,8 @@ pub struct LocalDoHProxy {
 
 impl LocalDoHProxy {
     pub fn new(backend: Arc<dyn SystemDnsBackend>, history: DNSHistoryStore) -> Self {
-        let initial_provider = DNSProvider::built_in_providers().into_iter().next().unwrap();
         let all_providers = DNSProvider::built_in_providers();
+        let initial_provider = all_providers.first().cloned();
 
         let state = Arc::new_cyclic(|weak| {
             let weak_arc = Arc::new(weak.clone());
@@ -152,8 +152,10 @@ impl LocalDoHProxy {
     pub fn configure(&self, active: DNSProvider, all: Vec<DNSProvider>) {
         let changed = {
             let mut cfg = self.state.config.write().unwrap();
-            let ch = cfg.active_provider.id != active.id || cfg.active_provider.doh_url != active.doh_url;
-            cfg.active_provider = active.clone();
+            let ch = cfg.active_provider.as_ref().map_or(true, |cur| {
+                cur.id != active.id || cur.doh_url != active.doh_url
+            });
+            cfg.active_provider = Some(active.clone());
             cfg.all_providers = all;
             ch
         };
@@ -401,6 +403,36 @@ impl LocalDoHProxy {
                 }
             }
         }
+
+        let Some(provider) = provider else {
+            if fallback_active {
+                if let Ok(ip) = fallback_host.parse::<IpAddr>() {
+                    if let Some(fb_reply) = send_udp_dns(query, SocketAddr::new(ip, 53), 2000).await {
+                        let ips = extract_a_records(&fb_reply);
+                        self.log_resolution(
+                            domain,
+                            qtype_str,
+                            ResolutionSource::Fallback,
+                            fallback_host,
+                            1,
+                            ips,
+                            true,
+                        );
+                        return Some(with_transaction_id(tx_id, &fb_reply));
+                    }
+                }
+            }
+            self.log_resolution(
+                domain,
+                qtype_str,
+                ResolutionSource::Error,
+                "Нет DNS".to_string(),
+                1,
+                Vec::new(),
+                false,
+            );
+            return Some(build_failure_response(query, 2));
+        };
 
         // 2. Fresh in-memory TTL cache
         let cache_key = format!("{}:{}:{}", provider.id, domain, qtype);
@@ -977,8 +1009,22 @@ mod tests {
         let history = DNSHistoryStore::new();
         let proxy = LocalDoHProxy::new(backend, history.clone());
 
+        let boot_provider = DNSProvider {
+            id: "boot-test".to_string(),
+            name: "Boot Test".to_string(),
+            subtitle: "dns.test.local".to_string(),
+            doh_url: "https://dns.test.local/dns-query".to_string(),
+            dot_host: "dns.test.local".to_string(),
+            bootstrap_ips: vec!["195.133.25.16".to_string()],
+            plain_dns_supported: true,
+            website_url: "https://test.local/".to_string(),
+            is_built_in: false,
+            is_enabled_in_menu_bar: true,
+        };
+        proxy.configure(boot_provider.clone(), vec![boot_provider]);
+
         // 1. Bootstrap static synthesis
-        let q_boot = build_a_query("dns.comss.one", 0x1111);
+        let q_boot = build_a_query("dns.test.local", 0x1111);
         let resp_boot = proxy.resolve_dns_query(&q_boot).await.unwrap();
         assert_eq!(transaction_id(&resp_boot), 0x1111);
         assert_eq!(rcode(&resp_boot), 0);
