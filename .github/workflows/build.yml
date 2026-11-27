@@ -145,6 +145,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            artifacts/DNSSwitcher-Windows/*
-            artifacts/DNSSwitcher-Linux/*
+            artifacts/DNSSwitcher-Windows/**/*
+            artifacts/DNSSwitcher-Linux/**/*
+          fail_on_unmatched_files: true
           generate_release_notes: true
