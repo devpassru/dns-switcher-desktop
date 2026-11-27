@@ -1,0 +1,18 @@
+[package]
+name = "dns-bridge"
+version.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "dns-switcher-bridge"
+path = "src/main.rs"
+
+[dependencies]
+dns-core = { path = "../dns-core" }
+tokio = { version = "1", features = ["full"] }
+serde_json = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[target.'cfg(windows)'.dependencies]
+windows-service = "0.7"

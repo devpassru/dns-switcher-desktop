@@ -1,0 +1,14 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/dns-core",
+    "crates/dns-bridge",
+    "src-tauri",
+]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2021"
+authors = ["devpassru"]
+license = "MIT"
+repository = "https://github.com/devpassru/dns-switcher-desktop"

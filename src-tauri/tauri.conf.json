@@ -1,0 +1,79 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "AI DNS Switcher",
+  "version": "1.0.0",
+  "identifier": "ru.devpass.dnsswitcher",
+  "build": {
+    "beforeDevCommand": "pnpm run build:bridge && pnpm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "pnpm run build:bridge && pnpm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "AI DNS Switcher",
+        "url": "index.html?view=main",
+        "width": 324,
+        "height": 500,
+        "resizable": false,
+        "visible": false,
+        "decorations": true,
+        "alwaysOnTop": false,
+        "skipTaskbar": false
+      },
+      {
+        "label": "settings",
+        "title": "Настройки AI DNS",
+        "url": "index.html?view=settings",
+        "width": 620,
+        "height": 580,
+        "minWidth": 560,
+        "minHeight": 500,
+        "resizable": true,
+        "visible": false
+      },
+      {
+        "label": "history",
+        "title": "История DNS-запросов",
+        "url": "index.html?view=history",
+        "width": 780,
+        "height": 520,
+        "minWidth": 680,
+        "minHeight": 420,
+        "resizable": true,
+        "visible": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "externalBin": [
+      "binaries/dns-switcher-bridge"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "wix": null,
+      "nsis": {
+        "displayLanguageSelector": false,
+        "languages": ["Russian", "English"]
+      }
+    },
+    "linux": {
+      "deb": {
+        "depends": []
+      }
+    }
+  }
+}

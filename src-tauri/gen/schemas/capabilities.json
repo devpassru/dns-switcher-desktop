@@ -1,0 +1,1 @@
+{"default":{"identifier":"default","description":"Default capabilities for AI DNS Switcher","local":true,"windows":["main","settings","history"],"permissions":["core:default","core:event:default","core:window:default","opener:default","autostart:default"]}}
