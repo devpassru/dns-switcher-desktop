@@ -9,6 +9,3 @@ members = [
 [workspace.package]
 version = "1.0.0"
 edition = "2021"
-authors = ["devpassru"]
-license = "MIT"
-repository = "https://github.com/devpassru/dns-switcher-desktop"

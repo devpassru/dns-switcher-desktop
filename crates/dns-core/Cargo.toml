@@ -13,4 +13,3 @@ chrono = { version = "0.4", features = ["serde"] }
 uuid = { version = "1", features = ["v4", "serde"] }
 directories = "5"
 tracing = "0.1"
-thiserror = "2"
